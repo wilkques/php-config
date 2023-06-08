@@ -17,7 +17,7 @@ composer require wilkques/config
     ];
     ```
 
-    Or
+    Or json
 
     ```json
     {
@@ -25,8 +25,8 @@ composer require wilkques/config
     }
     ```
 
-    Or
-    need php yaml extension
+    Or yaml
+    ※need php yaml extension
 
     ```yaml
     abc:
