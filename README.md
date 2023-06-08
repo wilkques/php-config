@@ -25,7 +25,7 @@ composer require wilkques/config
     }
     ```
 
-    Or yaml
+    Or yaml<br>
     ※need php yaml extension
 
     ```yaml
