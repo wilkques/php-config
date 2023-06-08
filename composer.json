@@ -1,0 +1,21 @@
+{
+    "name": "wilkques/config",
+    "license": "MIT",
+    "type": "library",
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "Wilkques\\Config\\": "src/"
+        }
+    },
+    "require": {
+        "wilkques/container": "^3.0.0",
+        "wilkques/php-helper": "^1.0.0"
+    },
+    "suggest": {
+        "php": "^5.0",
+        "ext-yaml": "Required to use the YAML output option"
+    }
+}
