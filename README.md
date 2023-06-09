@@ -45,7 +45,11 @@ composer require wilkques/config
 
     $config->setItem('<key>', '<value>'); // set config item
 
+    $config->withConfig([
+        '<key>' => '<value>' // set config with array
+    ]);
+
     $config->getItem('<key>'); // get config item
 
-    $config->getItems(); // get config all items
+    $config->all(); // get config all items
     ```

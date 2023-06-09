@@ -64,7 +64,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function setItem($key, $value)
     {
-        $this->config = data_set($this->getConfig(), $key, $value);
+        $this->config = data_set($this->all(), $key, $value);
 
         return $this;
     }
@@ -76,7 +76,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function withConfig(array $config)
     {
-        $this->config = array_merge_recursive($this->config, $config);
+        $this->config = array_merge_recursive_distinct($this->all(), $config);
 
         return $this;
     }
@@ -84,7 +84,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     /**
      * @return array
      */
-    public function getConfig()
+    public function all()
     {
         return $this->config;
     }
@@ -96,15 +96,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function getItem($key)
     {
-        return data_get($this->getConfig(), $key);
-    }
-
-    /**
-     * @return array
-     */
-    public function getItems()
-    {
-        return $this->getConfig();
+        return data_get($this->all(), $key);
     }
 
     /**
@@ -160,7 +152,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function jsonSerialize()
     {
-        return $this->getConfig();
+        return $this->all();
     }
 
     /**
@@ -216,7 +208,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function count()
     {
-        return count($this->getConfig());
+        return count($this->all());
     }
 
     /**
@@ -224,20 +216,16 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function getIterator()
     {
-        yield from $this->getConfig();
+        yield from $this->all();
     }
 
     /**
      * @param string $key
      * @param mixed $value
-     * 
-     * @return static
      */
     public function __set($key, $value)
     {
         $this->setItem($key, $value);
-
-        return $this;
     }
 
     /**
