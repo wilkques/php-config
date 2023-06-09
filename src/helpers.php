@@ -6,8 +6,19 @@ if (!function_exists('config')) {
      * 
      * @return mixed
      */
-    function config()
+    function config($key = null)
     {
-        return container(\Wilkques\Config\Config::class);
+        /** @var \Wilkques\Config\Config */
+        $config = container(\Wilkques\Config\Config::class);
+
+        if ($key) {
+            if ($config->isEmptyConfig()) {
+                $config->build();
+            }
+
+            return $config->getItem($key);
+        }
+
+        return $config;
     }
 }

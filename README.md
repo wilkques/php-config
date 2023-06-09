@@ -37,9 +37,9 @@ composer require wilkques/config
     ```php
     require_once 'vendor/autoload.php';
 
-    $config = config();
+    $config = config('<key>'); // get config item
 
-    $config
+    $config = config()
     ->setPath('<config path>') // if you want change
     ->build(); // put config files
 

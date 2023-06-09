@@ -146,6 +146,14 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     }
 
     /**
+     * @return bool
+     */
+    public function isEmptyConfig()
+    {
+        return empty($this->all());
+    }
+
+    /**
      * Convert the object into something JSON serializable.
      *
      * @return array
@@ -200,7 +208,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function offsetUnset($offset)
     {
-        array_take_off_recursive($this->config, $offset);
+        array_take_off_recursive($this->all(), $offset);
     }
 
     /**
