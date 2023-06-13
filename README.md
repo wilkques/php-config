@@ -37,11 +37,13 @@ composer require wilkques/config
     ```php
     require_once 'vendor/autoload.php';
 
-    $config = config('<key>'); // get config item
+    container()->singleton(\Wilkques\Config\Config::class, function (\Wilkques\Config\Config $config) {
+        return $config
+            ->setPath('<config path>') // if you want change
+            ->build(); // put config files
+    });
 
-    $config = config()
-    ->setPath('<config path>') // if you want change
-    ->build(); // put config files
+    $config = config('<key>'); // get config item
 
     $config->setItem('<key>', '<value>'); // set config item
 
