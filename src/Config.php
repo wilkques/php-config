@@ -64,7 +64,9 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function setItem($key, $value)
     {
-        $this->config = data_set($this->all(), $key, $value);
+        $originConfig = $this->all();
+        
+        $this->config = data_set($originConfig, $key, $value);
 
         return $this;
     }
@@ -76,7 +78,9 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function withConfig(array $config)
     {
-        $this->config = array_merge_recursive_distinct($this->all(), $config);
+        $originConfig = $this->all();
+        
+        $this->config = array_merge_recursive_distinct($originConfig, $config);
 
         return $this;
     }
@@ -217,7 +221,11 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function offsetUnset($offset)
     {
-        array_take_off_recursive($this->all(), $offset);
+        $config = $this->all();
+        
+        array_take_off_recursive($config, $offset);
+
+        $this->setConfig($config);
     }
 
     /**
