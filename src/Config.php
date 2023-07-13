@@ -90,13 +90,22 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     }
 
     /**
+     * @return array
+     */
+    public function items()
+    {
+        return $this->all();
+    }
+
+    /**
      * @param string $key
+     * @param mixed|null $default
      * 
      * @return mixed
      */
-    public function getItem($key)
+    public function getItem($key, $default = null)
     {
-        return data_get($this->all(), $key);
+        return data_get($this->all(), $key, $default);
     }
 
     /**
