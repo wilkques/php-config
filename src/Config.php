@@ -121,23 +121,31 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
 
         foreach (dir_scan($this->getConfigRootPath()) as $path) {
             if (preg_match('/php/i', $path)) {
-                preg_match('/(\w+).php/i', $path, $matches);
+                preg_match('/(\w+).php$/i', $path, $matches);
 
-                $config[array_pop($matches)] = require_once $path;
+                if ($matches) {
+                    $config[array_pop($matches)] = require_once $path;
+                }
             } else if (preg_match('/json/i', $path)) {
-                preg_match('/(\w+).json/i', $path, $matches);
+                preg_match('/(\w+).json$/i', $path, $matches);
 
-                $jsonString = file_get_contents($path);
+                if ($matches) {
+                    $jsonString = file_get_contents($path);
 
-                $config[array_pop($matches)] = json_decode($jsonString, true);
+                    $config[array_pop($matches)] = json_decode($jsonString, true);
+                }
             } else if (preg_match('/yaml/i', $path)) {
-                preg_match('/(\w+).yaml/i', $path, $matches);
+                preg_match('/(\w+).yaml$/i', $path, $matches);
 
-                $config[array_pop($matches)] = $this->yaml($path);
+                if ($matches) {
+                    $config[array_pop($matches)] = $this->yaml($path);
+                }
             } else if (preg_match('/yml/i', $path)) {
-                preg_match('/(\w+).yml/i', $path, $matches);
+                preg_match('/(\w+).yml$/i', $path, $matches);
 
-                $config[array_pop($matches)] = $this->yaml($path);
+                if ($matches) {
+                    $config[array_pop($matches)] = $this->yaml($path);
+                }
             }
         }
 
