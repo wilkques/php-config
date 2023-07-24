@@ -11,11 +11,11 @@
         }
     },
     "require": {
+        "php": ">=5.5",
         "wilkques/container": "^3.0.0",
         "wilkques/php-helper": "^2.0.0"
     },
     "suggest": {
-        "php": "^5.0",
         "ext-yaml": "Required to use the YAML output option"
     }
 }

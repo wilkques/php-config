@@ -80,7 +80,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     {
         $originConfig = $this->all();
         
-        $this->config = array_merge_recursive_distinct($originConfig, $config);
+        $this->config = array_merge_distinct_recursive($originConfig, $config);
 
         return $this;
     }
