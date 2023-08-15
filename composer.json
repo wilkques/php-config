@@ -15,6 +15,9 @@
         "wilkques/container": "^3.0.0",
         "wilkques/php-helper": "^3.0.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
     "suggest": {
         "ext-yaml": "Required to use the YAML output option"
     }
