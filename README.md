@@ -1,5 +1,6 @@
 # Config for PHP
 
+[![TESTS](https://github.com/wilkques/php-config/actions/workflows/github-ci.yml/badge.svg)](https://github.com/wilkques/php-config/actions/workflows/github-ci.yml)
 [![Latest Stable Version](https://poser.pugx.org/wilkques/config/v/stable)](https://packagist.org/packages/wilkques/config)
 [![License](https://poser.pugx.org/wilkques/config/license)](https://packagist.org/packages/wilkques/config)
 
