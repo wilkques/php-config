@@ -5,7 +5,7 @@ namespace Wilkques\Config;
 class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAggregate
 {
     /** @var array */
-    protected $config = [];
+    protected $config = array();
 
     /**
      * Config path default ./Config
@@ -65,7 +65,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     public function setItem($key, $value)
     {
         $originConfig = $this->all();
-        
+
         $this->config = data_set($originConfig, $key, $value);
 
         return $this;
@@ -79,7 +79,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     public function withConfig(array $config)
     {
         $originConfig = $this->all();
-        
+
         $this->config = array_merge_distinct_recursive($originConfig, $config);
 
         return $this;
@@ -119,37 +119,70 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     {
         $config = array();
 
-        foreach (dir_scan($this->getConfigRootPath()) as $path) {
-            if (preg_match('/php/i', $path)) {
-                preg_match('/(\w+).php$/i', $path, $matches);
+        foreach (dir_scan($root = $this->getConfigRootPath()) as $path) {
+            $pathInfo = pathinfo($path);
 
-                if ($matches) {
-                    $config[array_pop($matches)] = require_once $path;
-                }
-            } else if (preg_match('/json/i', $path)) {
-                preg_match('/(\w+).json$/i', $path, $matches);
-
-                if ($matches) {
+            switch ($pathInfo['extension']) {
+                case 'php':
+                    $data = require_once $path;
+                    break;
+                case 'json':
                     $jsonString = file_get_contents($path);
 
-                    $config[array_pop($matches)] = json_decode($jsonString, true);
-                }
-            } else if (preg_match('/yaml/i', $path)) {
-                preg_match('/(\w+).yaml$/i', $path, $matches);
-
-                if ($matches) {
-                    $config[array_pop($matches)] = $this->yaml($path);
-                }
-            } else if (preg_match('/yml/i', $path)) {
-                preg_match('/(\w+).yml$/i', $path, $matches);
-
-                if ($matches) {
-                    $config[array_pop($matches)] = $this->yaml($path);
-                }
+                    $data = json_decode($jsonString, true);
+                    break;
+                case 'yaml':
+                case 'yml':
+                    $data = $this->yaml($path);
+                    break;
+                default:
+                    return;
+                    break;
             }
+
+            $path = str_replace($root, '', $pathInfo['dirname']);
+
+            if ($path) {
+                $config = array_merge_distinct_recursive($config, $this->node($path, $data));
+
+                continue;
+            }
+
+            $config[$pathInfo['filename']] = $data;
         }
 
         return $this->setConfig($config);
+    }
+
+    /**
+     * @param string $path
+     * @param array $data
+     * 
+     * @return array
+     */
+    protected function node($path, $data)
+    {
+        $nodeInfo = array_filter(preg_split("/\\\\/i", $path));
+
+        $nodeData = array();
+
+        $current = &$nodeData;
+
+        foreach ($nodeInfo as $node) {
+            if (next($nodeInfo)) {
+                $current = array(
+                    $node => $current
+                );
+            } else {
+                $current = array(
+                    $node => $data
+                );
+            }
+
+            $current = &$current[$node];
+        }
+
+        return $nodeData;
     }
 
     /**
@@ -230,7 +263,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     public function offsetUnset($offset)
     {
         $config = $this->all();
-        
+
         array_take_off_recursive($config, $offset);
 
         $this->setConfig($config);
