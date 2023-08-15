@@ -33,15 +33,42 @@ class ConfigTests extends TestCase
 
         $this->config->build();
 
-        $this->assertCount(1, $config = $this->config->all());
+        $this->assertCount(4, $config = $this->config->all());
 
-        $this->assertArrayHasKey('settings', $config);
+        $this->assertArrayHasKey('php', $config);
 
-        $this->assertArrayHasKey('abc', $config['settings']);
+        $this->assertArrayHasKey('json', $config);
+
+        $this->assertArrayHasKey('yml', $config);
+
+        $this->assertArrayHasKey('yaml', $config);
+
+        $this->assertArrayHasKey('abc', $config['php']);
+
+        $this->assertArrayHasKey('abc', $config['json']);
+
+        $this->assertArrayHasKey('abc', $config['yml']);
+
+        $this->assertArrayHasKey('abc', $config['yaml']);
 
         $this->assertEquals(
             'efg',
-            $this->config->getItem('settings.abc')
+            $this->config->getItem('php.abc')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $this->config->getItem('json.abc')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $this->config->getItem('yml.abc')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $this->config->getItem('yaml.abc')
         );
     }
 
