@@ -122,9 +122,11 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
         foreach (dir_scan($root = $this->getConfigRootPath()) as $path) {
             $pathInfo = pathinfo($path);
 
-            switch ($pathInfo['extension']) {
+            $extension = strtolower($pathInfo['extension']);
+
+            switch ($extension) {
                 case 'php':
-                    $data = require_once $path;
+                    $data = require $path;
                     break;
                 case 'json':
                     $jsonString = file_get_contents($path);
@@ -136,19 +138,24 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
                     $data = $this->yaml($path);
                     break;
                 default:
-                    return;
+                    $data = null;
                     break;
+            }
+
+            // If the data is empty, then skip to the next iteration of the loop.
+            if (!$data) {
+                continue;
             }
 
             $path = str_replace($root, '', $pathInfo['dirname']);
 
+            // If there are subfolders under the root directory, merge files from the sublayers.
             if ($path) {
                 $config = array_merge_distinct_recursive($config, $this->node($path, $data));
-
-                continue;
+            } else {
+                // The file name becomes the key directly.
+                $config[$pathInfo['filename']] = $data;
             }
-
-            $config[$pathInfo['filename']] = $data;
         }
 
         return $this->setConfig($config);
