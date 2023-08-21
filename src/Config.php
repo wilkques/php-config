@@ -151,6 +151,8 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
 
             // If there are subfolders under the root directory, merge files from the sublayers.
             if ($path) {
+                $path .= DIRECTORY_SEPARATOR . $pathInfo['filename'];
+
                 $config = array_merge_distinct_recursive($config, $this->node($path, $data));
             } else {
                 // The file name becomes the key directly.
@@ -169,7 +171,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     protected function node($path, $data)
     {
-        $nodeInfo = array_filter(preg_split("/\\\\/i", $path));
+        $nodeInfo = array_filter(preg_split("/\//i", $path));
 
         $nodeData = array();
 

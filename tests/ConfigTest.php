@@ -48,9 +48,9 @@ class ConfigTest extends TestCase
      * 
      * @param Config $config
      */
-    public function testBuildKeyCheck($config)
+    public function testBuildRootKeyCheck($config)
     {
-        $this->assertCount(4, $arrayConfig = $config->all());
+        $this->assertCount(5, $arrayConfig = $config->all());
 
         $this->assertArrayHasKey('php', $arrayConfig);
 
@@ -59,6 +59,8 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('yml', $arrayConfig);
 
         $this->assertArrayHasKey('yaml', $arrayConfig);
+
+        $this->assertArrayHasKey('folders', $arrayConfig);
 
         $this->assertArrayHasKey('abc', $phpConfig = $config->getItem('php'));
 
@@ -75,8 +77,6 @@ class ConfigTest extends TestCase
         $this->assertArrayHasKey('abc', $yamlConfig = $config->getItem('yaml'));
 
         $this->assertArrayHasKey('hij', $yamlConfig);
-
-        return $config;
     }
 
     /**
@@ -84,9 +84,93 @@ class ConfigTest extends TestCase
      * 
      * @param Config $config
      */
-    public function testBuild($config)
+    public function testBuildSubFoldersKeyCheck($config)
     {
-        $this->assertCount(4, $config->all());
+        $this->assertCount(5, $config->all());
+
+        $this->assertArrayHasKey('php', $folderConfig = $config->getItem('folders'));
+
+        $this->assertArrayHasKey('json', $folderConfig);
+
+        $this->assertArrayHasKey('yml', $folderConfig);
+
+        $this->assertArrayHasKey('yaml', $folderConfig);
+
+        $this->assertArrayHasKey('abc', $phpConfig = $config->getItem('folders.php'));
+
+        $this->assertArrayHasKey('hij', $phpConfig);
+
+        $this->assertArrayHasKey('abc', $jsonConfig = $config->getItem('folders.json'));
+
+        $this->assertArrayHasKey('hij', $jsonConfig);
+
+        $this->assertArrayHasKey('abc', $ymlConfig = $config->getItem('folders.yml'));
+
+        $this->assertArrayHasKey('hij', $ymlConfig);
+
+        $this->assertArrayHasKey('abc', $yamlConfig = $config->getItem('folders.yaml'));
+
+        $this->assertArrayHasKey('hij', $yamlConfig);
+    }
+
+    /**
+     * @dataProvider configProvider
+     * 
+     * @param Config $config
+     */
+    public function testBuildRoot($config)
+    {
+        $this->assertCount(5, $config->all());
+
+        $this->assertEquals(
+            'efg',
+            $config->getItem('folders.php.abc')
+        );
+
+        $this->assertEquals(
+            'opq',
+            $config->getItem('folders.php.hij.lmn')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $config->getItem('folders.json.abc')
+        );
+
+        $this->assertEquals(
+            'opq',
+            $config->getItem('folders.json.hij.lmn')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $config->getItem('folders.yml.abc')
+        );
+
+        $this->assertEquals(
+            'opq',
+            $config->getItem('folders.yml.hij.lmn')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $config->getItem('folders.yaml.abc')
+        );
+
+        $this->assertEquals(
+            'opq',
+            $config->getItem('folders.yaml.hij.lmn')
+        );
+    }
+
+    /**
+     * @dataProvider configProvider
+     * 
+     * @param Config $config
+     */
+    public function testBuildSubFolders($config)
+    {
+        $this->assertCount(5, $config->all());
 
         $this->assertEquals(
             'efg',
