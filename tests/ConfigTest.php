@@ -124,56 +124,6 @@ class ConfigTest extends TestCase
 
         $this->assertEquals(
             'efg',
-            $config->getItem('folders.php.abc')
-        );
-
-        $this->assertEquals(
-            'opq',
-            $config->getItem('folders.php.hij.lmn')
-        );
-
-        $this->assertEquals(
-            'efg',
-            $config->getItem('folders.json.abc')
-        );
-
-        $this->assertEquals(
-            'opq',
-            $config->getItem('folders.json.hij.lmn')
-        );
-
-        $this->assertEquals(
-            'efg',
-            $config->getItem('folders.yml.abc')
-        );
-
-        $this->assertEquals(
-            'opq',
-            $config->getItem('folders.yml.hij.lmn')
-        );
-
-        $this->assertEquals(
-            'efg',
-            $config->getItem('folders.yaml.abc')
-        );
-
-        $this->assertEquals(
-            'opq',
-            $config->getItem('folders.yaml.hij.lmn')
-        );
-    }
-
-    /**
-     * @dataProvider configProvider
-     * 
-     * @param Config $config
-     */
-    public function testBuildSubFolders($config)
-    {
-        $this->assertCount(5, $config->all());
-
-        $this->assertEquals(
-            'efg',
             $config->getItem('php.abc')
         );
 
@@ -210,6 +160,56 @@ class ConfigTest extends TestCase
         $this->assertEquals(
             'opq',
             $config->getItem('yaml.hij.lmn')
+        );
+    }
+
+    /**
+     * @dataProvider configProvider
+     * 
+     * @param Config $config
+     */
+    public function testBuildSubFolders($config)
+    {
+        $this->assertCount(5, $config->all());
+
+        $this->assertEquals(
+            'efg',
+            $config->getItem('folders.php.abc')
+        );
+
+        $this->assertEquals(
+            'opq',
+            $config->getItem('folders.php.hij.lmn')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $config->getItem('folders.json.abc')
+        );
+
+        $this->assertEquals(
+            'opq',
+            $config->getItem('folders.json.hij.lmn')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $config->getItem('folders.yml.abc')
+        );
+
+        $this->assertEquals(
+            'opq',
+            $config->getItem('folders.yml.hij.lmn')
+        );
+
+        $this->assertEquals(
+            'efg',
+            $config->getItem('folders.yaml.abc')
+        );
+
+        $this->assertEquals(
+            'opq',
+            $config->getItem('folders.yaml.hij.lmn')
         );
     }
 
