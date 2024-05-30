@@ -36,7 +36,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setConfigRootPath(string $configRootPath)
+    public function setConfigRootPath(string $configRootPath): static
     {
         $this->configRootPath = $configRootPath;
 
@@ -48,7 +48,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setPath(string $path)
+    public function setPath(string $path): static
     {
         return $this->setConfigRootPath($path);
     }
@@ -66,7 +66,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setConfig(array $config): self
+    public function setConfig(array $config): static
     {
         $this->config = $config;
 
@@ -74,12 +74,12 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     }
 
     /**
-     * @param string $key
+     * @param string|int $key
      * @param mixed $value
      * 
      * @return static
      */
-    public function setItem(string $key, $value): self
+    public function setItem(string|int $key, mixed $value): static
     {
         $originConfig = $this->all();
 
@@ -93,7 +93,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function withConfig(array $config): self
+    public function withConfig(array $config): static
     {
         $originConfig = $this->all();
 
@@ -124,7 +124,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return mixed
      */
-    public function getItem(string $key, $default = null): mixed
+    public function getItem(string $key, mixed $default = null): mixed
     {
         return data_get($this->all(), $key, $default);
     }
@@ -132,7 +132,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     /**
      * @return static
      */
-    public function build(): self
+    public function build(): static
     {
         $config = [];
 
@@ -250,7 +250,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return mixed
      */
-    public function offsetGet($offset): mixed
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->getItem($offset);
     }
@@ -263,7 +263,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->setItem($offset, $value);
     }
@@ -275,7 +275,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return bool
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return !is_null($this->getItem($offset));
     }
@@ -286,7 +286,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * @param  mixed  $offset
      * @return void
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         $config = $this->all();
 
@@ -315,7 +315,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * @param string $key
      * @param mixed $value
      */
-    public function __set(string $key, $value)
+    public function __set(string $key, mixed $value)
     {
         $this->setItem($key, $value);
     }
