@@ -250,7 +250,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return mixed
      */
-    public function offsetGet(mixed $offset): mixed
+    public function offsetGet($offset): mixed
     {
         return $this->getItem($offset);
     }
@@ -263,7 +263,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return void
      */
-    public function offsetSet(mixed $offset, mixed $value): void
+    public function offsetSet($offset, mixed $value): void
     {
         $this->setItem($offset, $value);
     }
@@ -275,7 +275,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return bool
      */
-    public function offsetExists(mixed $offset): bool
+    public function offsetExists($offset): bool
     {
         return !is_null($this->getItem($offset));
     }
@@ -286,7 +286,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * @param  mixed  $offset
      * @return void
      */
-    public function offsetUnset(mixed $offset): void
+    public function offsetUnset($offset): void
     {
         $config = $this->all();
 
