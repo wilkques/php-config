@@ -38,11 +38,7 @@ composer require wilkques/config
     ```php
     require_once 'vendor/autoload.php';
 
-    container()->singleton(\Wilkques\Config\Config::class, function (\Wilkques\Config\Config $config) {
-        return $config
-            ->setPath('<config path>') // if you want change
-            ->build(); // put config files
-    });
+    config()->build();
 
     $config = config('<key>'); // get config item
 

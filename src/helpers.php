@@ -2,21 +2,17 @@
 
 if (!function_exists('config')) {
     /**
-     * @param string $key
+     * @param string|int $key
+     * @param mixed|null $default
      * 
-     * @return mixed
+     * @return \App\Helpers\Config|mixed
      */
-    function config($key = null)
+    function config(string|int $key = null, mixed $default = null): mixed
     {
-        /** @var \Wilkques\Config\Config */
-        $config = container(\Wilkques\Config\Config::class);
+        $config = \Wilkques\Config\Config::make();
 
         if ($key) {
-            if ($config->isEmptyConfig()) {
-                $config->build();
-            }
-
-            return $config->getItem($key);
+            return $config->getItem($key, $default);
         }
 
         return $config;

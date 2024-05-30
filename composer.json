@@ -12,7 +12,6 @@
     },
     "require": {
         "php": ">=7.0",
-        "wilkques/container": "^3.0.0",
         "wilkques/php-helper": "^3.0.0"
     },
     "require-dev": {
