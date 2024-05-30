@@ -74,12 +74,12 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     }
 
     /**
-     * @param string|int $key
+     * @param string $key
      * @param mixed $value
      * 
      * @return static
      */
-    public function setItem(string|int $key, mixed $value): static
+    public function setItem(string $key, mixed $value): static
     {
         $originConfig = $this->all();
 
@@ -124,7 +124,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return mixed
      */
-    public function getItem($key, $default = null): mixed
+    public function getItem(string $key, mixed $default = null): mixed
     {
         return data_get($this->all(), $key, $default);
     }
