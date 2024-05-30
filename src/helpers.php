@@ -2,12 +2,12 @@
 
 if (!function_exists('config')) {
     /**
-     * @param string|int $key
+     * @param string $key
      * @param mixed|null $default
      * 
      * @return \App\Helpers\Config|mixed
      */
-    function config(string|int $key = null, mixed $default = null): mixed
+    function config(string $key = null, mixed $default = null): mixed
     {
         $config = \Wilkques\Config\Config::make();
 
