@@ -66,7 +66,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setConfig(array $config): static
+    public function setConfig(array $config): self
     {
         $this->config = $config;
 
@@ -79,7 +79,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setItem(string $key, mixed $value): static
+    public function setItem(string $key, mixed $value): self
     {
         $originConfig = $this->all();
 
@@ -93,7 +93,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function withConfig(array $config): static
+    public function withConfig(array $config): self
     {
         $originConfig = $this->all();
 
@@ -132,7 +132,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     /**
      * @return static
      */
-    public function build(): static
+    public function build(): self
     {
         $config = [];
 
