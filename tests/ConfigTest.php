@@ -17,7 +17,7 @@ class ConfigTest extends TestCase
         $this->config = new Config;
     }
 
-    public function configProvider()
+    public static function configProvider()
     {
         $config = new Config;
 
