@@ -12,7 +12,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @var string
      */
-    protected $configRootPath = './Config';
+    protected $configRootPath = './config';
 
     /** @var static */
     static $instance;

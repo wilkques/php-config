@@ -5,7 +5,7 @@ if (!function_exists('config')) {
      * @param string $key
      * @param mixed|null $default
      * 
-     * @return \App\Helpers\Config|mixed
+     * @return \Wilkques\Config\Config|mixed
      */
     function config(string $key = null, $default = null): mixed
     {
