@@ -23,7 +23,7 @@ class ConfigTest extends TestCase
 
         $config->setPath(__DIR__ . "/config");
 
-        $config->build();
+        $config->boot();
 
         return array(
             array($config),
