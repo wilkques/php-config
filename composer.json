@@ -12,7 +12,8 @@
     },
     "require": {
         "php": ">=5.4",
-        "wilkques/php-helper": "*"
+        "wilkques/php-helper": "*",
+        "wilkques/filesystem": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
