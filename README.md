@@ -40,7 +40,7 @@ composer require wilkques/config
 
     config()
     //->setPath('<config/path>') custom config path
-    ->build();
+    ->boot();
 
     $config = config('<key>'); // get config item
 
