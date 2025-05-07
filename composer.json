@@ -11,7 +11,7 @@
         }
     },
     "require": {
-        "php": ">=8.0",
+        "php": ">=5.4",
         "wilkques/php-helper": "*"
     },
     "require-dev": {

@@ -7,7 +7,7 @@ if (!function_exists('config')) {
      * 
      * @return \Wilkques\Config\Config|mixed
      */
-    function config(string $key = null, $default = null): mixed
+    function config($key = null, $default = null)
     {
         $config = \Wilkques\Config\Config::make();
 

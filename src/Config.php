@@ -2,7 +2,10 @@
 
 namespace Wilkques\Config;
 
-class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAggregate
+use Wilkques\Helpers\Arrays;
+use Wilkques\Helpers\Objects;
+
+class Config implements \Countable, \IteratorAggregate
 {
     /** @var array */
     protected $config = [];
@@ -36,7 +39,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setConfigRootPath(string $configRootPath): static
+    public function setConfigRootPath($configRootPath)
     {
         $this->configRootPath = $configRootPath;
 
@@ -48,7 +51,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setPath(string $path): static
+    public function setPath($path)
     {
         return $this->setConfigRootPath($path);
     }
@@ -56,7 +59,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     /**
      * @return string
      */
-    public function getConfigRootPath(): string
+    public function getConfigRootPath()
     {
         return $this->configRootPath;
     }
@@ -66,7 +69,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setConfig(array $config): static
+    public function setConfig($config)
     {
         $this->config = $config;
 
@@ -79,11 +82,11 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function setItem(string|int $key, mixed $value): static
+    public function setItem($key, $value)
     {
         $originConfig = $this->all();
 
-        $this->config = data_set($originConfig, $key, $value);
+        $this->config = Objects::set($originConfig, $key, $value);
 
         return $this;
     }
@@ -93,11 +96,11 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return static
      */
-    public function withConfig(array $config): static
+    public function withConfig($config)
     {
         $originConfig = $this->all();
 
-        $this->config = array_merge_distinct_recursive($originConfig, $config);
+        $this->config = Arrays::mergeDistinctRecursive($originConfig, $config);
 
         return $this;
     }
@@ -105,7 +108,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     /**
      * @return array
      */
-    public function all(): array
+    public function all()
     {
         return $this->config;
     }
@@ -113,7 +116,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     /**
      * @return array
      */
-    public function items(): array
+    public function items()
     {
         return $this->all();
     }
@@ -124,91 +127,88 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return mixed
      */
-    public function getItem(string $key, mixed $default = null): mixed
+    public function getItem($key, $default = null)
     {
-        return data_get($this->all(), $key, $default);
+        return Objects::get($this->all(), $key, $default);
     }
 
     /**
      * @return static
      */
-    public function build(): static
+    public function boot()
     {
-        $config = [];
+        $filesystem = new \Wilkques\Filesystem\Filesystem;
 
-        foreach (dir_scan($root = $this->getConfigRootPath()) as $path) {
-            $pathInfo = pathinfo($path);
+        $dirs = $filesystem->directories($this->getConfigRootPath());
 
-            $extension = strtolower($pathInfo['extension']);
+        return $this->setConfig(
+            $this->searchConfig($dirs, $filesystem)
+        );
+    }
 
-            switch ($extension) {
-                case 'php':
-                    $data = require $path;
-                    break;
-                case 'json':
-                    $jsonString = file_get_contents($path);
+    /**
+     * @param array $dirs
+     * @param \Wilkques\Filesystem\Filesystem $filesystem
+     * 
+     * @return array
+     */
+    public function searchConfig($dirs, $filesystem)
+    {
+        $config = array();
 
-                    $data = json_decode($jsonString, true);
-                    break;
-                case 'yaml':
-                case 'yml':
-                    $data = $this->yaml($path);
-                    break;
-                default:
-                    $data = null;
-                    break;
-            }
+        foreach ($dirs as $dir) {
+            $splFile = new \SplFileInfo($dir);
 
-            // If the data is empty, then skip to the next iteration of the loop.
-            if (!$data) {
+            if ($splFile->isDir()) {
+                $dir = $splFile->getPathname();
+
+                $config[basename($dir)] = $this->searchConfig(
+                    $filesystem->searchInDirectory($dir),
+                    $filesystem
+                );
+
                 continue;
             }
 
-            $path = str_replace($root, '', $pathInfo['dirname']);
+            $extension = $splFile->getExtension();
 
-            // If there are subfolders under the root directory, merge files from the sublayers.
-            if ($path) {
-                $path .= DIRECTORY_SEPARATOR . $pathInfo['filename'];
+            $key = $splFile->getBasename(".{$extension}");
 
-                $config = array_merge_distinct_recursive($config, $this->node($path, $data));
-            } else {
-                // The file name becomes the key directly.
-                $config[$pathInfo['filename']] = $data;
-            }
+            $config[$key] = $this->format($extension, $dir);
         }
 
-        return $this->setConfig($config);
+        return Arrays::filter($config);
     }
 
     /**
+     * @param string $extension
      * @param string $path
-     * @param array $data
      * 
      * @return array
      */
-    protected function node(string $path, array $data): array
+    protected function format($extension, $path)
     {
-        $nodeInfo = array_filter(preg_split("/\//i", $path));
+        $extension = strtolower($extension);
 
-        $nodeData = [];
+        switch ($extension) {
+            case 'php':
+                $data = require $path;
+                break;
+            case 'json':
+                $jsonString = file_get_contents($path);
 
-        $current = &$nodeData;
-
-        foreach ($nodeInfo as $node) {
-            if (next($nodeInfo)) {
-                $current = array(
-                    $node => $current
-                );
-            } else {
-                $current = array(
-                    $node => $data
-                );
-            }
-
-            $current = &$current[$node];
+                $data = json_decode($jsonString, true);
+                break;
+            case 'yaml':
+            case 'yml':
+                $data = $this->yaml($path);
+                break;
+            default:
+                $data = null;
+                break;
         }
 
-        return $nodeData;
+        return $data;
     }
 
     /**
@@ -216,7 +216,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * 
      * @return array
      */
-    public function yaml(string $path): array
+    public function yaml($path)
     {
         if (!extension_loaded('yaml')) {
             throw new \RuntimeException("Yaml extension not loaded");
@@ -228,85 +228,31 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
     /**
      * @return bool
      */
-    public function isEmptyConfig(): bool
+    public function isEmptyConfig()
     {
-        return empty($this->all());
+        return empty($this->config);
     }
 
     /**
-     * Convert the object into something JSON serializable.
-     *
-     * @return mixed
-     */
-    public function jsonSerialize(): mixed
-    {
-        return $this->all();
-    }
-
-    /**
-     * Get the value for a given offset.
-     *
-     * @param  mixed  $offset
-     * 
-     * @return mixed
-     */
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->getItem($offset);
-    }
-
-    /**
-     * Set the value for a given offset.
-     *
-     * @param  mixed  $offset
-     * @param  mixed  $value
-     * 
-     * @return void
-     */
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        $this->setItem($offset, $value);
-    }
-
-    /**
-     * Determine if the given attribute exists.
-     *
-     * @param  mixed  $offset
-     * 
      * @return bool
      */
-    public function offsetExists(mixed $offset): bool
+    public function isNotEmptyConfig()
     {
-        return !is_null($this->getItem($offset));
-    }
-
-    /**
-     * Unset the value for a given offset.
-     *
-     * @param  mixed  $offset
-     * @return void
-     */
-    public function offsetUnset(mixed $offset): void
-    {
-        $config = $this->all();
-
-        array_take_off_recursive($config, $offset);
-
-        $this->setConfig($config);
+        return ! $this->isEmptyConfig();
     }
 
     /**
      * @return int
      */
-    public function count(): int
+    public function count()
     {
-        return count($this->all());
+        return iterator_count($this->all());
     }
 
     /**
      * @return \Traversable
      */
-    public function getIterator(): \Traversable
+    public function getIterator()
     {
         return new \ArrayIterator($this->all());
     }
