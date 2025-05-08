@@ -5,7 +5,7 @@ namespace Wilkques\Config;
 use Wilkques\Helpers\Arrays;
 use Wilkques\Helpers\Objects;
 
-class Config implements \Countable, \IteratorAggregate
+class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAggregate
 {
     /** @var array */
     protected $config = [];
@@ -244,6 +244,7 @@ class Config implements \Countable, \IteratorAggregate
     /**
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return iterator_count($this->all());
@@ -252,9 +253,77 @@ class Config implements \Countable, \IteratorAggregate
     /**
      * @return \Traversable
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->all());
+    }
+
+    /**
+     * Convert the object into something JSON serializable.
+     *
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return $this->all();
+    }
+
+    /**
+     * Get the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * 
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
+    {
+        return $this->getItem($offset);
+    }
+
+    /**
+     * Set the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @param  mixed  $value
+     * 
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetSet($offset, $value)
+    {
+        $this->setItem($offset, $value);
+    }
+
+    /**
+     * Determine if the given attribute exists.
+     *
+     * @param  mixed  $offset
+     * 
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetExists($offset)
+    {
+        return !is_null($this->getItem($offset));
+    }
+
+    /**
+     * Unset the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($offset)
+    {
+        $config = $this->all();
+
+        array_take_off_recursive($config, $offset);
+
+        $this->setConfig($config);
     }
 
     /**
