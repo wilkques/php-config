@@ -38,7 +38,7 @@ class ConfigTest extends TestCase
     public function testSetPath($config)
     {
         $this->assertEquals(
-            __DIR__ . "/config",
+            dirname(dirname(__DIR__)) . "/config",
             $config->getConfigRootPath()
         );
     }
