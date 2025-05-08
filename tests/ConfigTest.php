@@ -10,7 +10,7 @@ class ConfigTest extends TestCase
     /** @var Config */
     protected $config;
 
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
 
