@@ -25,9 +25,7 @@ class ConfigTest extends TestCase
 
         $config->boot();
 
-        return array(
-            array($config),
-        );
+        yield [$config];
     }
 
     /**
