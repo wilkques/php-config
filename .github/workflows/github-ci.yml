@@ -36,23 +36,7 @@ jobs:
     - name: Manually install yaml extension for PHP 5.4
       if: matrix.php-versions == '5.4'
       run: |
-        sudo apt-get update
-        sudo apt-get install -y libyaml-dev re2c autoconf
-
-        # 路徑可能需要調整（找出正確的 phpize 路徑）
-        export PHP_PREFIX="$(php -r 'echo PHP_BINARY;')"
-        export PHP_PREFIX_DIR="$(dirname $(dirname $PHP_PREFIX))"
-        export PATH="$PHP_PREFIX_DIR/bin:$PATH"
-
-        git clone https://github.com/php/pecl-file_formats-yaml.git
-        cd pecl-file_formats-yaml
-        git checkout php5
-        phpize
-        ./configure
-        make
-        sudo make install
-
-        echo "extension=yaml.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+        pecl install -a yaml-1.3.2;
 
     - name: Cache Composer packages
       id: composer-cache
