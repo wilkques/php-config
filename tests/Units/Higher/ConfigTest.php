@@ -17,7 +17,7 @@ class ConfigTest extends TestCase
         $this->config = new Config;
     }
 
-    public static function configProvider()
+    public static function configProvider(): \Generator
     {
         $config = new Config;
 
