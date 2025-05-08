@@ -21,7 +21,7 @@ class ConfigTest extends TestCase
     {
         $config = new Config;
 
-        $config->setPath(__DIR__ . "/config");
+        $config->setPath(dirname(dirname(__DIR__)) . "/config");
 
         $config->boot();
 
