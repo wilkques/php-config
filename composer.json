@@ -10,6 +10,11 @@
             "Wilkques\\Config\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Wilkques\\Config\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=5.4",
         "wilkques/php-helper": "*",

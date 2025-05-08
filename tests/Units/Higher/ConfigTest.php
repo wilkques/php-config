@@ -1,6 +1,6 @@
 <?php
 
-namespace Wilkques\Config\Tests;
+namespace Wilkques\Config\Tests\Units\Php\Higher;
 
 use PHPUnit\Framework\TestCase;
 use Wilkques\Config\Config;
