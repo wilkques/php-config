@@ -25,15 +25,8 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
-        extensions: intl #optional
+        extensions: intl, yaml #optional
         ini-values: "post_max_size=256M" #optional
-
-    - name: Setup PHP with YAML extension
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-versions }}
-        extensions: yaml
-        coverage: none
 
     - name: Cache Composer packages
       id: composer-cache
