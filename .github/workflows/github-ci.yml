@@ -33,29 +33,18 @@ jobs:
         extensions: intl, yaml #optional
         ini-values: "post_max_size=256M" #optional
 
-    - name: Install YAML Extension
+    - name: Manually install yaml extension for PHP 5.4
+      if: matrix.php-versions == '5.4'
       run: |
-        # 对于 PHP 5.4，需要手动编译
-        if [ "${{ matrix.php-versions }}" == "5.4" ]; then
-          # 安装编译所需工具
-          sudo apt-get install -y php5-dev autoconf automake libtool
-
-          # 下载 YAML 扩展源码
-          git clone https://github.com/php/pecl-file_formats-yaml.git
-          cd pecl-file_formats-yaml
-
-          # 兼容 PHP 5.4 的版本
-          git checkout yaml-1.3.0
-
-          # 编译安装
-          phpize
-          ./configure
-          make
-          sudo make install
-
-          # 启用扩展
-          echo "extension=yaml.so" | sudo tee /etc/php/5.4/cli/conf.d/20-yaml.ini
-        fi
+        sudo apt-get install -y php5-dev libyaml-dev re2c
+        git clone https://github.com/php/pecl-file_formats-yaml.git
+        cd pecl-file_formats-yaml
+        git checkout php5
+        phpize
+        ./configure
+        make
+        sudo make install
+        echo "extension=yaml.so" | sudo tee -a /etc/php5/cli/php.ini
 
     - name: Cache Composer packages
       id: composer-cache
