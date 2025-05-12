@@ -8,7 +8,7 @@ use Wilkques\Helpers\Objects;
 class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAggregate
 {
     /** @var array */
-    protected $config = [];
+    protected $config = array();
 
     /**
      * Config path default ./Config
@@ -17,21 +17,12 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     protected $configRootPath = './config';
 
-    /** @var static */
-    static $instance;
-
     /**
      * @return static
      */
     public static function make()
     {
-        if (static::$instance) {
-            return static::$instance;
-        }
-
-        static::$instance = new static;
-
-        return static::$instance;
+        return container('\Wilkques\Config\Config');
     }
 
     /**
