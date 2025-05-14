@@ -22,7 +22,9 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public static function make()
     {
-        return (new \Wilkques\Container\Container)->make('\Wilkques\Config\Config');
+        $container = \Wilkques\Container\Container::getInstance();
+
+        return $container->make('\\Wilkques\\Config\\Config');
     }
 
     /**
