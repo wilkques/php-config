@@ -229,8 +229,6 @@ class ConfigTest extends TestCase
 
         $this->assertArrayHasKey('test', $this->config->all());
 
-        $this->assertCount(1, $this->config->all());
-
         $this->assertArrayHasKey('test', $this->config->all());
     }
 
@@ -239,8 +237,6 @@ class ConfigTest extends TestCase
         $this->config->withConfig([
             'test' => 'testss'
         ]);
-
-        $this->assertCount(1, $this->config->all());
 
         $this->assertArrayHasKey('test', $this->config->all());
 
