@@ -14,12 +14,12 @@ class ConfigTest extends TestCase
     {
         parent::setUp();
 
-        $this->config = new Config;
+        $this->config = config();
     }
 
     public static function configProvider(): \Generator
     {
-        $config = new Config;
+        $config = config();
 
         $config->setPath(dirname(dirname(__DIR__)) . "/config");
 
