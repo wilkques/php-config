@@ -2,6 +2,7 @@
 
 namespace Wilkques\Config;
 
+use Wilkques\Filesystem\Filesystem;
 use Wilkques\Helpers\Arrays;
 use Wilkques\Helpers\Objects;
 
@@ -16,6 +17,19 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      * @var string
      */
     protected $configRootPath = './config';
+
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @param Filesystem $filesystem
+     */
+    public function __construct(Filesystem $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
 
     /**
      * @return static
@@ -77,9 +91,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function setItem($key, $value)
     {
-        $originConfig = $this->all();
-
-        $this->config = Objects::set($originConfig, $key, $value);
+        Objects::set($this->config, $key, $value);
 
         return $this;
     }
@@ -91,9 +103,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function withConfig($config)
     {
-        $originConfig = $this->all();
-
-        $this->config = Arrays::mergeDistinctRecursive($originConfig, $config);
+        $this->config = Arrays::mergeDistinctRecursive($this->all(), $config);
 
         return $this;
     }
@@ -130,22 +140,19 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
      */
     public function boot()
     {
-        $filesystem = new \Wilkques\Filesystem\Filesystem;
-
-        $dirs = $filesystem->directories($this->getConfigRootPath());
+        $dirs = $this->filesystem->directories($this->getConfigRootPath());
 
         return $this->setConfig(
-            $this->searchConfig($dirs, $filesystem)
+            $this->searchConfig($dirs)
         );
     }
 
     /**
      * @param array $dirs
-     * @param \Wilkques\Filesystem\Filesystem $filesystem
      * 
      * @return array
      */
-    public function searchConfig($dirs, $filesystem)
+    public function searchConfig($dirs)
     {
         $config = array();
 
@@ -156,8 +163,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
                 $dir = $splFile->getPathname();
 
                 $config[basename($dir)] = $this->searchConfig(
-                    $filesystem->searchInDirectory($dir),
-                    $filesystem
+                    $this->filesystem->searchInDirectory($dir)
                 );
 
                 continue;
@@ -188,7 +194,7 @@ class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAg
                 $data = require $path;
                 break;
             case 'json':
-                $jsonString = file_get_contents($path);
+                $jsonString = $this->filesystem->get($path);
 
                 $data = json_decode($jsonString, true);
                 break;
