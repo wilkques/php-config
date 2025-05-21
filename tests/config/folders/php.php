@@ -1,8 +1,8 @@
 <?php
 
-return [
+return array(
     'abc' => 'efg',
     'hij' => array(
         'lmn' => 'opq',
     )
-];
+);
