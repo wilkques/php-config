@@ -2,6 +2,6 @@
 
 if (!interface_exists('JsonSerializable')) {
     interface JsonSerializable {
-        public function toJson();
+        public function jsonSerialize();
     }
 }
