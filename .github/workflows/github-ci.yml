@@ -38,6 +38,11 @@ jobs:
       run: |
         sudo pecl install -a yaml-1.3.2;
 
+    - name: Manually install yaml extension for PHP 5.3
+      if: matrix.php-versions == '5.3'
+      run: |
+        sudo pecl install -a yaml-1.2.0;
+
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
