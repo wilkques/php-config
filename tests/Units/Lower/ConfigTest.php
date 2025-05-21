@@ -236,9 +236,9 @@ class ConfigTest extends TestCase
 
     public function testWithConfig()
     {
-        $this->config->withConfig([
+        $this->config->withConfig(array(
             'test' => 'testss'
-        ]);
+        ));
 
         $this->assertArrayHasKey('test', $this->config->all());
 
