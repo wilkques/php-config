@@ -4,7 +4,8 @@
     "type": "library",
     "autoload": {
         "files": [
-            "src/helpers.php"
+            "src/helpers.php",
+            "src/JsonSerializable.php"
         ],
         "psr-4": {
             "Wilkques\\Config\\": "src/"

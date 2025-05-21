@@ -5,8 +5,9 @@ namespace Wilkques\Config;
 use Wilkques\Filesystem\Filesystem;
 use Wilkques\Helpers\Arrays;
 use Wilkques\Helpers\Objects;
+use JsonSerializable;
 
-class Config implements \JsonSerializable, \ArrayAccess, \Countable, \IteratorAggregate
+class Config implements JsonSerializable, \ArrayAccess, \Countable, \IteratorAggregate
 {
     /** @var array */
     protected $config = array();
