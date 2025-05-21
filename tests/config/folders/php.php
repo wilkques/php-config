@@ -2,7 +2,7 @@
 
 return [
     'abc' => 'efg',
-    'hij' => [
+    'hij' => array(
         'lmn' => 'opq',
-    ]
+    )
 ];
