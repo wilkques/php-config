@@ -19,7 +19,7 @@
     "require": {
         "php": ">=5.3",
         "wilkques/container": "*",
-        "wilkques/php-helper": "*",
+        "wilkques/php-helper": "^6.1.0",
         "wilkques/filesystem": "*"
     },
     "require-dev": {
