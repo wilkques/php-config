@@ -4,6 +4,8 @@
 [![Latest Stable Version](https://poser.pugx.org/wilkques/config/v/stable)](https://packagist.org/packages/wilkques/config)
 [![License](https://poser.pugx.org/wilkques/config/license)](https://packagist.org/packages/wilkques/config)
 
+English | [繁體中文](README_ZH.md)
+
 ````
 composer require wilkques/config
 ````
