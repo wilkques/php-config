@@ -55,4 +55,10 @@ composer require wilkques/config
     $config->getItem('<key>'); // get config item
 
     $config->all(); // get config all items
+
+    $config->foo = 'bar'; // set config item (magic property access)
+
+    $config->foo; // get config item (magic property access), same as $config->getItem('foo')
     ```
+
+`Config::make()` (and the `config()` global helper) always return the **same shared instance**, resolved through `Wilkques\Container\Container` — calling `->boot()` once is enough, every later `config()` call sees the same booted config.

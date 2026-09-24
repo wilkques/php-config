@@ -55,4 +55,10 @@ composer require wilkques/config
     $config->getItem('<key>'); // 取得設定項目
 
     $config->all(); // 取得所有設定項目
+
+    $config->foo = 'bar'; // 設定項目（透過 magic property 存取）
+
+    $config->foo; // 取得項目（透過 magic property 存取），等同 $config->getItem('foo')
     ```
+
+`Config::make()`（跟 `config()` 全域函式）永遠回傳**同一個共用實例**，透過 `Wilkques\Container\Container` 解析——只要呼叫過一次 `->boot()`，之後每次呼叫 `config()` 看到的都是同一個已經 boot 好的設定。
