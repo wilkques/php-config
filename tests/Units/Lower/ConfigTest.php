@@ -14,6 +14,17 @@ class ConfigTest extends TestCase
     {
         parent::setUp();
 
+        // Config::make() is a real singleton (resolved via the container),
+        // so without this, $this->config here would be the exact same
+        // instance across every test method in this class, leaking state
+        // (setItem()/withConfig()/magic __set calls in one test would bleed
+        // into every other test). Forgetting the cached instance before
+        // each test gives every test method its own fresh Config, while
+        // still leaving the dataProvider-built config (see configProvider())
+        // untouched, since that one is built once and cached by PHPUnit
+        // independently of this reset.
+        \Wilkques\Container\Container::getInstance()->forgetInstance('Wilkques\\Config\\Config');
+
         $this->config = config();
     }
 
@@ -246,5 +257,17 @@ class ConfigTest extends TestCase
             'testss',
             $this->config->getItem('test')
         );
+    }
+
+    public function testMagicSetAndGet()
+    {
+        $this->config->foo = 'bar';
+
+        $this->assertEquals('bar', $this->config->foo);
+    }
+
+    public function testMakeIsSingleton()
+    {
+        $this->assertSame(Config::make(), Config::make());
     }
 }

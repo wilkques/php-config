@@ -39,6 +39,10 @@ class Config implements JsonSerializable, \ArrayAccess, \Countable, \IteratorAgg
     {
         $container = \Wilkques\Container\Container::getInstance();
 
+        if (!$container->bound(__CLASS__)) {
+            $container->singleton(__CLASS__);
+        }
+
         return $container->make(__CLASS__);
     }
 
@@ -141,40 +145,39 @@ class Config implements JsonSerializable, \ArrayAccess, \Countable, \IteratorAgg
      */
     public function boot()
     {
-        $dirs = $this->filesystem->directories($this->getConfigRootPath());
+        // Not directories(): that only returns direct subdirectories,
+        // silently excluding any config file sitting directly under the
+        // config root. tree() recurses through the whole config root while
+        // preserving directory structure, which searchConfig() below relies
+        // on to tell files apart from subdirectories.
+        $tree = $this->filesystem->tree($this->getConfigRootPath());
 
         return $this->setConfig(
-            $this->searchConfig($dirs)
+            $this->searchConfig($tree)
         );
     }
 
     /**
-     * @param array $dirs
-     * 
+     * @param array $tree
+     *
      * @return array
      */
-    public function searchConfig($dirs)
+    public function searchConfig($tree)
     {
         $config = array();
 
-        foreach ($dirs as $dir) {
-            $splFile = new \SplFileInfo($dir);
-
-            if ($splFile->isDir()) {
-                $dir = $splFile->getPathname();
-
-                $config[basename($dir)] = $this->searchConfig(
-                    $this->filesystem->searchInDirectory($dir)
-                );
+        foreach ($tree as $key => $value) {
+            if (is_array($value)) {
+                $config[$key] = $this->searchConfig($value);
 
                 continue;
             }
 
-            $extension = $splFile->getExtension();
+            $extension = pathinfo($value, PATHINFO_EXTENSION);
 
-            $key = $splFile->getBasename(".{$extension}");
+            $configKey = pathinfo($value, PATHINFO_FILENAME);
 
-            $config[$key] = $this->format($extension, $dir);
+            $config[$configKey] = $this->format($extension, $value);
         }
 
         return Arrays::filter($config);
@@ -330,17 +333,17 @@ class Config implements JsonSerializable, \ArrayAccess, \Countable, \IteratorAgg
      * @param string $key
      * @param mixed $value
      */
-    public function __set(string $key, mixed $value)
+    public function __set($key, $value)
     {
         $this->setItem($key, $value);
     }
 
     /**
      * @param string $key
-     * 
+     *
      * @return mixed
      */
-    public function __get(string $key)
+    public function __get($key)
     {
         return $this->getItem($key);
     }
