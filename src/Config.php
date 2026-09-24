@@ -250,7 +250,10 @@ class Config implements JsonSerializable, \ArrayAccess, \Countable, \IteratorAgg
     #[\ReturnTypeWillChange]
     public function count()
     {
-        return iterator_count($this->all());
+        // Not iterator_count(): it requires a Traversable, but all()
+        // returns a plain array, so this fatals ("must implement
+        // interface Traversable, array given") on PHP 5.3 through 8.1.
+        return count($this->all());
     }
 
     /**

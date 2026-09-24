@@ -268,4 +268,12 @@ class ConfigTest extends TestCase
     {
         $this->assertSame(Config::make(), Config::make());
     }
+
+    public function testCount()
+    {
+        $this->config->setItem('a', 1);
+        $this->config->setItem('b', 2);
+
+        $this->assertCount(2, $this->config);
+    }
 }
