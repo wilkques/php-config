@@ -20,7 +20,7 @@
         "php": ">=5.3",
         "wilkques/container": "*",
         "wilkques/php-helper": "^6.1.0",
-        "wilkques/filesystem": "*"
+        "wilkques/filesystem": "^2.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
